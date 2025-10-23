@@ -35,7 +35,7 @@ Series::new(vec![
 ])
 ```
 A complete signal chain: parallel oscillators → summing mixer → soft clipper. This demonstrates how networks can be nested and chained.
-
+```
   ┌─────────────────────────────────────────────────────────────────┐
   │                        Series Network                           │
   ├─────────────────────────────────────────────────────────────────┤
@@ -59,7 +59,7 @@ A complete signal chain: parallel oscillators → summing mixer → soft clipper
   │  └─────────────────────┘    └──────────────┘    └────────────┘  │
   │                                                                 │
   └─────────────────────────────────────────────────────────────────┘
-
+```
 ### Components
 
 - **SineOsc**: Basic sine wave oscillator with configurable frequency
