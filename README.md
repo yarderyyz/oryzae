@@ -6,7 +6,7 @@ An audio processing playground for experimenting with modular network architectu
 
 This repo explores different approaches to building audio processing networks. 
 
-Currently I'm experimenting with using a trait-based design all audio components implement a common `Network` trait, allowing easy composition of oscillators, effects, and routing. This network design is heavily inspired by [Marsayas](https://github.com/marsyas/marsyas).
+Currently I'm experimenting with using a trait-based design all audio components implement a common `Network` trait, allowing easy composition of oscillators, effects, and routing. This network design is heavily inspired by [Marsyas](https://github.com/marsyas/marsyas).
 
 Ideas I want to play with going forward include matrix based input -> output mapping. And the interplay between control rate signals and audio rate signals. Obviously adding more modules and utilities.
 
