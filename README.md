@@ -1,4 +1,4 @@
-# Synths
+# Oryzae
 
 An audio processing playground for experimenting with modular network architectures.
 
