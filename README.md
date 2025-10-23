@@ -36,6 +36,30 @@ Series::new(vec![
 ```
 A complete signal chain: parallel oscillators → summing mixer → soft clipper. This demonstrates how networks can be nested and chained.
 
+  ┌─────────────────────────────────────────────────────────────────┐
+  │                        Series Network                           │
+  ├─────────────────────────────────────────────────────────────────┤
+  │                                                                 │
+  │  ┌─────────────────────┐    ┌──────────────┐    ┌────────────┐  │
+  │  │   Parallel Block    │    │  Summing     │    │  Soft      │  │
+  │  │                     │    │  Mixer       │───▶│  Clipper   │──┼──▶ Audio Out
+  │  │  ┌────────────────┐ │    │              │    │            │  │
+  │  │  │ SineOsc 80Hz   │ │    │  Sums all    │    │ Applies    │  │
+  │  │  │ ┌────────────┐ │─┼───▶│  channels    │    │ soft       │  │
+  │  │  │ │ sin(80Hz)  │ │ │    │  to mono     │    │ clipping   │  │
+  │  │  │ └────────────┘ │ │    │              │    │ distortion │  │
+  │  │  └────────────────┘ │    │  out[0] =    │    │            │  │
+  │  │                     │    │  sum(inputs) │    │            │  │
+  │  │  ┌────────────────┐ │    │              │    │            │  │
+  │  │  │ SineOsc 84Hz   │ │    │              │    │            │  │
+  │  │  │ ┌────────────┐ │─┼───▶│              │    │            │  │
+  │  │  │ │ sin(84Hz)  │ │ │    │              │    │            │  │
+  │  │  │ └────────────┘ │ │    │              │    │            │  │
+  │  │  └────────────────┘ │    │              │    │            │  │
+  │  └─────────────────────┘    └──────────────┘    └────────────┘  │
+  │                                                                 │
+  └─────────────────────────────────────────────────────────────────┘
+
 ### Components
 
 - **SineOsc**: Basic sine wave oscillator with configurable frequency
