@@ -46,7 +46,7 @@ fn build_stream<T>(
     mut network: Box<dyn Network + Send>,
 ) -> Result<cpal::Stream, cpal::BuildStreamError>
 where
-    T: Sample + cpal::SizedSample + Send + 'static + FromSample<f32>,
+    T: Sample + cpal::SizedSample + FromSample<f32>,
 {
     let channels = config.channels as usize;
 
