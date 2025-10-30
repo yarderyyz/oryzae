@@ -1,27 +1,38 @@
 use num::Complex;
 use std::f32::consts::PI;
 
+enum DftDirection {
+    Forward,
+    Inverse,
+}
+
 // Naive DFT
 pub fn dft(in_frame: &[f32]) -> Vec<Complex<f32>> {
-    let n = in_frame.len();
-    let th = -2.0 * PI / n as f32;
     let complex_frame: Vec<_> = in_frame.iter().map(|&x| Complex::new(x, 0.0)).collect();
-    dft_kernel(&complex_frame, th, 1.0)
+    kernel(&complex_frame, 1.0, DftDirection::Forward)
 }
 
 pub fn idft(in_frame: &[Complex<f32>]) -> Vec<f32> {
     let n = in_frame.len();
-    let th = 2.0 * PI / n as f32;
     let normalization = 1.0 / n as f32;
 
-    dft_kernel(in_frame, th, normalization)
+    kernel(in_frame, normalization, DftDirection::Inverse)
         .iter()
         .map(|c| c.re)
         .collect()
 }
 
 /// DFT formula: X[j] = Σ(k=0 to N-1) x[k] * e^(i*th*j*k)
-fn dft_kernel(in_frame: &[Complex<f32>], th: f32, normalization: f32) -> Vec<Complex<f32>> {
+fn kernel(
+    in_frame: &[Complex<f32>],
+    normalization: f32,
+    direction: DftDirection,
+) -> Vec<Complex<f32>> {
+    let n = in_frame.len();
+    let th = match direction {
+        DftDirection::Forward => 2.0 * PI / n as f32,
+        DftDirection::Inverse => -2.0 * PI / n as f32,
+    };
     (0..in_frame.len())
         .map(|j| {
             let mut sum = in_frame
