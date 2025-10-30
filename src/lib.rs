@@ -4,22 +4,24 @@
 //! using the `Network` trait. All audio processing components implement this trait,
 //! allowing for flexible composition of oscillators, mixers, effects, and routing.
 
+pub mod audio;
+pub mod effects;
+pub mod mixers;
 pub mod network;
 pub mod oscillators;
-pub mod mixers;
-pub mod effects;
 pub mod routing;
-pub mod audio;
+pub mod spectrum;
 
 // Re-export core types for convenience
 pub use network::Network;
 
 /// Prelude module for convenient imports
 pub mod prelude {
+    pub use crate::audio::*;
+    pub use crate::effects::*;
+    pub use crate::mixers::*;
     pub use crate::network::*;
     pub use crate::oscillators::*;
-    pub use crate::mixers::*;
-    pub use crate::effects::*;
     pub use crate::routing::*;
-    pub use crate::audio::*;
 }
+

@@ -6,3 +6,7 @@ edition = "2024"
 [dependencies]
 cpal = "0.16"
 ndarray = "0.16.1"
+num = "0.4.3"
+
+[dev-dependencies]
+approx = "0.5"

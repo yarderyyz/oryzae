@@ -2,7 +2,7 @@ use crate::network::{Network, SYSTEM_SAMPLE_RATE};
 use std::f32::consts::PI;
 
 /// High-quality sine wave oscillator
-/// 
+///
 /// Generates clean sine waves using the standard sin() function.
 /// Suitable for audio-rate synthesis where quality is important.
 pub struct SineOsc {
@@ -13,10 +13,10 @@ pub struct SineOsc {
 
 impl SineOsc {
     /// Create a new sine oscillator
-    /// 
+    ///
     /// # Arguments
     /// * `frequency` - Frequency in Hz
-    /// 
+    ///
     /// # Returns
     /// * Boxed SineOsc instance
     pub fn new(frequency: f32) -> Box<Self> {
@@ -41,3 +41,4 @@ impl Network for SineOsc {
         self.out.as_slice()
     }
 }
+
