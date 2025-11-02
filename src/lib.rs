@@ -13,7 +13,9 @@ pub mod routing;
 pub mod spectrum;
 
 // Re-export core types for convenience
-pub use network::Network;
+pub use network::{
+    Network, NetworkComplexComplex, NetworkComplexReal, NetworkRealComplex, NetworkRealReal,
+};
 
 /// Prelude module for convenient imports
 pub mod prelude {
@@ -24,4 +26,3 @@ pub mod prelude {
     pub use crate::oscillators::*;
     pub use crate::routing::*;
 }
-

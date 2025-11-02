@@ -22,4 +22,3 @@ pub fn get_default_output_device(host: &cpal::Host) -> Result<cpal::Device, &'st
     host.default_output_device()
         .ok_or("No output device available")
 }
-

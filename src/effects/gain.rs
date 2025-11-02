@@ -1,7 +1,9 @@
-use crate::network::Network;
+use crate::network::{
+    BlockRequirements, BlockSize, NetworkRealReal, ProcessStatus, RealBuffer, RealBufferMut,
+};
 
 /// Gain/volume control effect
-/// 
+///
 /// Multiplies all input samples by a gain factor. Can be used for
 /// volume control, attenuation, or amplification.
 pub struct Gain {
@@ -11,10 +13,10 @@ pub struct Gain {
 
 impl Gain {
     /// Create a new gain effect
-    /// 
+    ///
     /// # Arguments
     /// * `gain` - Gain multiplier (1.0 = unity gain, 0.5 = half volume, 2.0 = double volume)
-    /// 
+    ///
     /// # Returns
     /// * Boxed Gain instance
     pub fn new(gain: f64) -> Box<Self> {
@@ -25,7 +27,7 @@ impl Gain {
     }
 
     /// Set the gain value
-    /// 
+    ///
     /// # Arguments
     /// * `gain` - New gain multiplier
     pub fn set_gain(&mut self, gain: f64) {
@@ -33,7 +35,7 @@ impl Gain {
     }
 
     /// Get the current gain value
-    /// 
+    ///
     /// # Returns
     /// * Current gain multiplier
     pub fn get_gain(&self) -> f64 {
@@ -41,13 +43,27 @@ impl Gain {
     }
 }
 
-impl Network<f64> for Gain {
-    fn get_frame(&mut self, in_frame: &[f64]) -> &[f64] {
-        if in_frame.len() != self.out_frame.len() {
-            self.out_frame.resize(in_frame.len(), 0.0)
+impl NetworkRealReal<f64> for Gain {
+    fn process(&mut self, input: RealBuffer<f64>, output: RealBufferMut<f64>) -> ProcessStatus {
+        if input.is_empty() || output.is_empty() {
+            return ProcessStatus::Ready;
         }
-        self.out_frame.copy_from_slice(in_frame);
-        self.out_frame.iter_mut().for_each(|x| *x *= self.gain);
-        self.out_frame.as_slice()
+
+        let channels = input.len().min(output.len());
+        for ch in 0..channels {
+            let samples = input[ch].len().min(output[ch].len());
+            for i in 0..samples {
+                output[ch][i] = input[ch][i] * self.gain;
+            }
+        }
+
+        ProcessStatus::Ready
+    }
+
+    fn block_size(&self) -> BlockRequirements {
+        BlockRequirements {
+            input_size: BlockSize::Flexible,
+            output_size: BlockSize::Flexible,
+        }
     }
 }

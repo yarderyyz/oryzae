@@ -1,4 +1,7 @@
-use crate::network::{Network, SYSTEM_SAMPLE_RATE};
+use crate::network::{
+    BlockRequirements, BlockSize, NetworkRealReal, ProcessStatus, RealBuffer, RealBufferMut,
+    SYSTEM_SAMPLE_RATE,
+};
 
 /// Sign enum for FastSineOsc phase tracking
 #[derive(Debug, Clone, Copy)]
@@ -17,7 +20,7 @@ impl Sign {
 }
 
 /// Fast sine wave oscillator using parabolic approximation
-/// 
+///
 /// Fast Sine is good for a cheap simple LFO, it runs at audio rates fine but could not be
 /// remotely described as a "clean" sine oscillator. Uses a parabolic approximation for speed.
 pub struct FastSineOsc {
@@ -29,10 +32,10 @@ pub struct FastSineOsc {
 
 impl FastSineOsc {
     /// Create a new fast sine oscillator
-    /// 
+    ///
     /// # Arguments
     /// * `frequency` - Frequency in Hz
-    /// 
+    ///
     /// # Returns
     /// * Boxed FastSineOsc instance
     pub fn new(frequency: f64) -> Box<Self> {
@@ -45,8 +48,12 @@ impl FastSineOsc {
     }
 }
 
-impl Network<f64> for FastSineOsc {
-    fn get_frame(&mut self, _: &[f64]) -> &[f64] {
+impl NetworkRealReal<f64> for FastSineOsc {
+    fn process(&mut self, _input: RealBuffer<f64>, output: RealBufferMut<f64>) -> ProcessStatus {
+        if output.is_empty() || output[0].is_empty() {
+            return ProcessStatus::Ready;
+        }
+
         let current_phase = self.phase;
 
         let sample = match self.sign {
@@ -60,7 +67,14 @@ impl Network<f64> for FastSineOsc {
             self.sign = self.sign.flip();
         }
         self.phase = new_phase;
-        self.out[0] = sample;
-        self.out.as_slice()
+        output[0][0] = sample;
+        ProcessStatus::Ready
+    }
+
+    fn block_size(&self) -> BlockRequirements {
+        BlockRequirements {
+            input_size: BlockSize::Fixed(1),
+            output_size: BlockSize::Fixed(1),
+        }
     }
 }

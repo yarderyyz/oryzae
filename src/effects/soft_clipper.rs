@@ -1,4 +1,6 @@
-use crate::network::Network;
+use crate::network::{
+    BlockRequirements, BlockSize, NetworkRealReal, ProcessStatus, RealBuffer, RealBufferMut,
+};
 
 /// Soft limiting function
 #[inline]
@@ -34,17 +36,28 @@ impl SoftClipper {
     }
 }
 
-impl Network<f64> for SoftClipper {
-    fn get_frame(&mut self, in_frame: &[f64]) -> &[f64] {
-        if self.out_frame.len() != in_frame.len() {
-            self.out_frame.resize(in_frame.len(), 0.0)
+impl NetworkRealReal<f64> for SoftClipper {
+    fn process(&mut self, input: RealBuffer<f64>, output: RealBufferMut<f64>) -> ProcessStatus {
+        if input.is_empty() || output.is_empty() {
+            return ProcessStatus::Ready;
         }
-        self.out_frame
-            .iter_mut()
-            .enumerate()
-            .for_each(|(channel, sample)| *sample = soft_clip(in_frame[channel]));
 
-        self.out_frame.as_slice()
+        let channels = input.len().min(output.len());
+        for ch in 0..channels {
+            let samples = input[ch].len().min(output[ch].len());
+            for i in 0..samples {
+                output[ch][i] = soft_clip(input[ch][i]);
+            }
+        }
+
+        ProcessStatus::Ready
+    }
+
+    fn block_size(&self) -> BlockRequirements {
+        BlockRequirements {
+            input_size: BlockSize::Flexible,
+            output_size: BlockSize::Flexible,
+        }
     }
 }
 
@@ -53,4 +66,3 @@ impl Default for SoftClipper {
         Self { out_frame: vec![] }
     }
 }
-
