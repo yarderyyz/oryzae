@@ -5,8 +5,8 @@ use crate::network::Network;
 /// Chains multiple networks sequentially, where the output of one network
 /// becomes the input to the next network in the chain.
 pub struct Series {
-    sub_networks: Vec<Box<dyn Network + Send>>,
-    out_frame: Vec<f32>,
+    sub_networks: Vec<Box<dyn Network<f64> + Send>>,
+    out_frame: Vec<f64>,
 }
 
 impl Series {
@@ -17,7 +17,7 @@ impl Series {
     /// 
     /// # Returns
     /// * Boxed Series instance
-    pub fn new(networks: Vec<Box<dyn Network + Send>>) -> Box<Self> {
+    pub fn new(networks: Vec<Box<dyn Network<f64> + Send>>) -> Box<Self> {
         Box::new(Self {
             sub_networks: networks,
             out_frame: vec![0.0],
@@ -25,8 +25,8 @@ impl Series {
     }
 }
 
-impl Network for Series {
-    fn get_frame(&mut self, in_frame: &[f32]) -> &[f32] {
+impl Network<f64> for Series {
+    fn get_frame(&mut self, in_frame: &[f64]) -> &[f64] {
         let out_frame = self
             .sub_networks
             .iter_mut()

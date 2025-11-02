@@ -1,5 +1,5 @@
-use cpal::traits::{DeviceTrait, HostTrait, StreamTrait};
 use cpal::SampleFormat;
+use cpal::traits::{DeviceTrait, HostTrait, StreamTrait};
 use oryzae::prelude::*;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -11,7 +11,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let config = device.default_output_config()?;
 
     // TODO: bail if setting fails
-    let _ = SYSTEM_SAMPLE_RATE.set(config.sample_rate().0 as f32);
+    let _ = SYSTEM_SAMPLE_RATE.set(config.sample_rate().0 as f64);
 
     let sine_osc_1 = FastSineOsc::new(120.0);
     let sine_osc_2 = FastSineOsc::new(2.0);
@@ -51,3 +51,4 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     Ok(())
 }
+

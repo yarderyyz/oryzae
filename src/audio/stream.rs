@@ -17,10 +17,10 @@ use cpal::{FromSample, Sample};
 pub fn build_stream<T>(
     device: &cpal::Device,
     config: &cpal::StreamConfig,
-    mut network: Box<dyn Network + Send>,
+    mut network: Box<dyn Network<f64> + Send>,
 ) -> Result<cpal::Stream, cpal::BuildStreamError>
 where
-    T: Sample + cpal::SizedSample + FromSample<f32>,
+    T: Sample + cpal::SizedSample + FromSample<f64>,
 {
     let channels = config.channels as usize;
 
@@ -31,7 +31,7 @@ where
                 // frame == left/right pair for stereo
 
                 let net_frame = network.get_frame(&[]);
-                let mut value = Sample::from_sample(0.0f32);
+                let mut value = Sample::from_sample(0.0f64);
                 for (channel, out_sample) in frame.iter_mut().enumerate() {
                     if channel < net_frame.len() {
                         value = Sample::from_sample(net_frame[channel]);

@@ -2,13 +2,13 @@ use crate::network::Network;
 
 /// Soft limiting function
 #[inline]
-fn soft_limit(x: f32) -> f32 {
+fn soft_limit(x: f64) -> f64 {
     x * (27.0 + x * x) / (27.0 + 9.0 * x * x)
 }
 
 /// Soft clipping function with smooth limiting
 #[inline]
-fn soft_clip(x: f32) -> f32 {
+fn soft_clip(x: f64) -> f64 {
     match x {
         x if x < -3.0 => -1.0,
         x if x > 3.0 => 1.0,
@@ -17,16 +17,16 @@ fn soft_clip(x: f32) -> f32 {
 }
 
 /// Soft clipping distortion effect
-/// 
+///
 /// Applies gentle saturation and limiting to prevent harsh clipping.
 /// Uses a smooth mathematical function to gradually compress loud signals.
 pub struct SoftClipper {
-    out_frame: Vec<f32>,
+    out_frame: Vec<f64>,
 }
 
 impl SoftClipper {
     /// Create a new soft clipper effect
-    /// 
+    ///
     /// # Returns
     /// * Boxed SoftClipper instance
     pub fn new() -> Box<Self> {
@@ -34,8 +34,8 @@ impl SoftClipper {
     }
 }
 
-impl Network for SoftClipper {
-    fn get_frame(&mut self, in_frame: &[f32]) -> &[f32] {
+impl Network<f64> for SoftClipper {
+    fn get_frame(&mut self, in_frame: &[f64]) -> &[f64] {
         if self.out_frame.len() != in_frame.len() {
             self.out_frame.resize(in_frame.len(), 0.0)
         }
@@ -53,3 +53,4 @@ impl Default for SoftClipper {
         Self { out_frame: vec![] }
     }
 }
+

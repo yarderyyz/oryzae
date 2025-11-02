@@ -21,10 +21,10 @@ impl Sign {
 /// Fast Sine is good for a cheap simple LFO, it runs at audio rates fine but could not be
 /// remotely described as a "clean" sine oscillator. Uses a parabolic approximation for speed.
 pub struct FastSineOsc {
-    phase: f32,
-    phase_increment: f32,
+    phase: f64,
+    phase_increment: f64,
     sign: Sign,
-    out: Vec<f32>,
+    out: Vec<f64>,
 }
 
 impl FastSineOsc {
@@ -35,18 +35,18 @@ impl FastSineOsc {
     /// 
     /// # Returns
     /// * Boxed FastSineOsc instance
-    pub fn new(frequency: f32) -> Box<Self> {
+    pub fn new(frequency: f64) -> Box<Self> {
         Box::new(Self {
             phase_increment: frequency * 4.0 / SYSTEM_SAMPLE_RATE.get().unwrap(),
-            phase: -1.0f32,
+            phase: -1.0f64,
             sign: Sign::Positive,
             out: vec![0.0],
         })
     }
 }
 
-impl Network for FastSineOsc {
-    fn get_frame(&mut self, _: &[f32]) -> &[f32] {
+impl Network<f64> for FastSineOsc {
+    fn get_frame(&mut self, _: &[f64]) -> &[f64] {
         let current_phase = self.phase;
 
         let sample = match self.sign {

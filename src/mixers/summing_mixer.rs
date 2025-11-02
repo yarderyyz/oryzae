@@ -5,7 +5,7 @@ use crate::network::Network;
 /// Takes multiple input channels and sums them into a single mono output channel.
 /// Useful for combining multiple audio sources.
 pub struct SummingMixer {
-    out_frame: Vec<f32>,
+    out_frame: Vec<f64>,
 }
 
 impl SummingMixer {
@@ -20,8 +20,8 @@ impl SummingMixer {
     }
 }
 
-impl Network for SummingMixer {
-    fn get_frame(&mut self, in_frame: &[f32]) -> &[f32] {
+impl Network<f64> for SummingMixer {
+    fn get_frame(&mut self, in_frame: &[f64]) -> &[f64] {
         self.out_frame[0] = in_frame.iter().sum();
         self.out_frame.as_slice()
     }

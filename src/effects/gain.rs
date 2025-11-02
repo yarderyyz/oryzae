@@ -5,8 +5,8 @@ use crate::network::Network;
 /// Multiplies all input samples by a gain factor. Can be used for
 /// volume control, attenuation, or amplification.
 pub struct Gain {
-    gain: f32,
-    out_frame: Vec<f32>,
+    gain: f64,
+    out_frame: Vec<f64>,
 }
 
 impl Gain {
@@ -17,7 +17,7 @@ impl Gain {
     /// 
     /// # Returns
     /// * Boxed Gain instance
-    pub fn new(gain: f32) -> Box<Self> {
+    pub fn new(gain: f64) -> Box<Self> {
         Box::new(Self {
             gain,
             out_frame: vec![],
@@ -28,7 +28,7 @@ impl Gain {
     /// 
     /// # Arguments
     /// * `gain` - New gain multiplier
-    pub fn set_gain(&mut self, gain: f32) {
+    pub fn set_gain(&mut self, gain: f64) {
         self.gain = gain;
     }
 
@@ -36,13 +36,13 @@ impl Gain {
     /// 
     /// # Returns
     /// * Current gain multiplier
-    pub fn get_gain(&self) -> f32 {
+    pub fn get_gain(&self) -> f64 {
         self.gain
     }
 }
 
-impl Network for Gain {
-    fn get_frame(&mut self, in_frame: &[f32]) -> &[f32] {
+impl Network<f64> for Gain {
+    fn get_frame(&mut self, in_frame: &[f64]) -> &[f64] {
         if in_frame.len() != self.out_frame.len() {
             self.out_frame.resize(in_frame.len(), 0.0)
         }
